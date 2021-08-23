@@ -1,22 +1,33 @@
 const express = require('express')
-const app = express()
-const port = process.env.port || 3000
+const webApi = express()
+const path = require('path')
+const dotenv = require('dotenv')
+const morganLogger = require('./middleware/logger')
 
-app.post('/api/books', (req, res) => {
+//configuration
+dotenv.config({path:path.resolve(process.cwd(),"src/config/.env")})
+const port = process.env.PORT || 3000
+
+//middleware
+webApi.use(morganLogger)
+webApi.use(express.json())
+
+webApi.post('/api/books', (req, res) => {
     res.status(200).json({message: "book is added to records"})
 })
-app.get('/api/books', (req, res) => {
+webApi.get('/api/books', (req, res) => {
     res.status(200).json({message: "All books records"})
 })
-app.get('/api/books/:id', (req, res) => {
+webApi.get('/api/books/:id', (req, res) => {
     res.status(200).json({message: "individual book record"})
 })
-app.put('/api/books/:id', (req, res) => {
+webApi.put('/api/books/:id', (req, res) => {
     res.status(200).json({message: "update individual book in the record"})
 })
-app.delete('/api/books/:id', (req, res) => {
+webApi.delete('/api/books/:id', (req, res) => {
     res.status(200).json({message: "delete individual book in the record"})
 })
-app.listen(port, () => {
-    console.log('server is runing on port' + port);
+webApi.listen(port, () => {
+    console.log(`env port: ${process.env.port}`);
+    console.log(`server is listening on port ${port}, http://localhost:${port}`)
 })
